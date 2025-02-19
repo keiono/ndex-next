@@ -34,3 +34,43 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+# Project Structure
+
+/
+├── app/                      # Core application directory for App Router
+│   ├── layout.tsx           # Root layout definition
+│   ├── page.tsx             # Home page component
+│   └── providers.tsx        # Global providers (SWR Config, etc.)
+│
+├── components/              # Reusable component library
+│   ├── ui/                 # Basic UI components
+│   │   ├── button.tsx     # Atomic button component
+│   │   └── input.tsx      # Form input elements
+│   └── features/           # Feature-specific components
+│       └── auth/          # Authentication related components
+│           ├── login-form.tsx 
+│           └── register-form.tsx
+│
+├── hooks/                  # Custom React hooks
+│   ├── use-auth.ts        # Authentication hooks
+│   └── use-form.ts        # Form handling hooks
+│
+├── lib/                    # Utility functions and configurations
+│   ├── api/               # API client setup
+│   │   └── client.ts      # Axios/fetch instance configuration
+│   └── utils/             # Utility functions
+│       └── format.ts      # Date formatting, string manipulation, etc.
+│
+├── services/              # Business logic and API calls
+│   ├── auth.ts           # Authentication service
+│   └── user.ts           # User management service
+│
+└── types/                # TypeScript type definitions
+    ├── api/              # API-related types
+    │   ├── requests.ts   # Request type definitions
+    │   └── responses.ts  # Response type definitions
+    ├── entities/         # Domain entity types
+    │   ├── user.ts      # User entity definition
+    │   └── post.ts      # Post entity definition
+    └── index.ts         # Common type definitions and exports
