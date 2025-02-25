@@ -2,7 +2,8 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card } from '@/components/ui/card'
-import { useNetworkSearch } from '@/services/ndex-service'
+import { NetworkTable } from './NetworkTable'
+import { useNetworkSearch } from '@/hooks/use-network-search'
 
 export function TabsPanel() {
   const searchParams = {
@@ -10,14 +11,14 @@ export function TabsPanel() {
     start: 0,
     size: 25,
   }
-  const { data, error, isLoading } = useNetworkSearch(searchParams)
+  const { networks, error, isLoading } = useNetworkSearch(searchParams)
 
   return (
     <Card className="p-4">
       <Tabs defaultValue="networks" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="networks">Networks</TabsTrigger>
-          <TabsTrigger value="collections">Collections</TabsTrigger>
+          <TabsTrigger value="collections">Users</TabsTrigger>
         </TabsList>
         <TabsContent value="networks">
           <div className="p-4">
@@ -28,27 +29,7 @@ export function TabsPanel() {
                 Error loading networks: {error.message}
               </p>
             )}
-            {data?.networks && (
-              <div className="space-y-4">
-                {data.networks.map((network) => (
-                  <div
-                    key={network.externalId}
-                    className="border p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
-                    <h3 className="font-medium">{network.name}</h3>
-                    {network.description && (
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {network.description}
-                      </p>
-                    )}
-                    <div className="flex gap-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
-                      <span>Nodes: {network.nodeCount}</span>
-                      <span>Edges: {network.edgeCount}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            <NetworkTable networks={networks} />
           </div>
         </TabsContent>
         <TabsContent value="collections">

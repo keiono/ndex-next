@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeWrapper } from '@/components/theme-wrapper'
+import { ConfigProvider } from '@/lib/contexts/ConfigContext'
 
 export const metadata: Metadata = {
   title: 'NDEx 3',
@@ -14,13 +15,7 @@ export const metadata: Metadata = {
 }
 
 function DynamicFavicon() {
-  return (
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href={'/ndex-logo.svg'}
-    />
-  )
+  return <link rel="icon" type="image/svg+xml" href={'/ndex-logo.svg'} />
 }
 
 export default function RootLayout({
@@ -34,7 +29,9 @@ export default function RootLayout({
         <DynamicFavicon />
       </head>
       <body className={`antialiased min-h-screen`}>
-        <ThemeWrapper>{children}</ThemeWrapper>
+        <ConfigProvider>
+          <ThemeWrapper>{children}</ThemeWrapper>
+        </ConfigProvider>
       </body>
     </html>
   )

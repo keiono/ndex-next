@@ -37,8 +37,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 # Project Structure
 
-/
-├── app/                      # Core application directory for App Router
+src/
+├── app/                     # Core application directory for App Router
 │   ├── layout.tsx           # Root layout definition
 │   ├── page.tsx             # Home page component
 │   └── providers.tsx        # Global providers (SWR Config, etc.)
