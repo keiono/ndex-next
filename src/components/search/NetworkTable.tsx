@@ -86,13 +86,16 @@ export function NetworkTable({
   }
 
   return (
-    <div className="relative">
+    <div className="relative overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Index</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
+            <TableHead className="w-2">Index</TableHead>
+            <TableHead className="w-1/9">Name</TableHead>
+            <TableHead className="w-2">Reference</TableHead>
+            <TableHead className="w-1/6 hidden sm:table-cell">
+              Description
+            </TableHead>
             <TableHead>Created</TableHead>
             <TableHead
               className={cn(
@@ -123,6 +126,11 @@ export function NetworkTable({
             <TableRow key={network.externalId}>
               <TableCell>{index + 1}</TableCell>
               <TableCell>{network.name}</TableCell>
+              <TableCell>
+                {network.properties
+                  .map((entry) => `${entry.name} = ${entry.value}`)
+                  .join(', ')}
+              </TableCell>
               <TableCell>{network.description}</TableCell>
               <TableCell>
                 {new Date(network.creationTime).toLocaleDateString()}
@@ -133,7 +141,7 @@ export function NetworkTable({
           ))}
         </TableBody>
       </Table>
-      <div className="mt-4 pb-4 relative">
+      <div className="mt-4 pb-4">
         <div
           ref={observerTarget}
           className="h-16 flex items-center justify-center"
