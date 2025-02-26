@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ModeToggle } from '@/components/mode-toggle'
+import { SearchBox } from './search/SearchBox'
 
 export function NavBar() {
   return (
@@ -14,20 +15,20 @@ export function NavBar() {
           <Image src="/ndex-logo.svg" alt="NDEx Logo" width={76} height={76} />
           NDEx v3
         </Link>
-
-        <nav className="hidden mx-5 md:flex items-start gap-4">
-          <Link href="/about" className="text-lg hover:text-primary">
-            About
-          </Link>
-          <Link href="/docs" className="text-lg hover:text-primary">
-            Docs
-          </Link>
-          <Link href="/contact" className="text-lg hover:text-primary">
-            Contact
-          </Link>
-        </nav>
+        <SearchBox />
 
         <div className="ml-auto flex items-center gap-4">
+          <nav className="hidden md:flex items-center gap-4">
+            <Link href="/about" className="text-lg hover:text-primary">
+              About
+            </Link>
+            <Link href="/docs" className="text-lg hover:text-primary">
+              Docs
+            </Link>
+            <Link href="/contact" className="text-lg hover:text-primary">
+              Contact
+            </Link>
+          </nav>
           <ModeToggle />
           <Button>Login</Button>
         </div>

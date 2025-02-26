@@ -11,12 +11,19 @@ export const networkListFetcher = async (
   url: string,
   params: NetworkSearchParams,
 ) => {
+  // Extract start and size from URL
+
+  // Add pagination to search params
+  const requestBody = {
+    ...params,
+  }
+
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(params),
+    body: JSON.stringify(requestBody),
   })
 
   if (!response.ok) {

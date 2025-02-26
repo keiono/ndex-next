@@ -5,6 +5,4 @@ export interface NetworkSearchParams {
   permission?: Permission
   includeGroups?: boolean
   accountName?: string
-  start?: number
-  size?: number
 }

@@ -4,17 +4,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card } from '@/components/ui/card'
 import { NetworkTable } from './NetworkTable'
 import { useNetworkSearch } from '@/hooks/use-network-search'
+import { useSearchParams } from 'next/navigation'
+import { SearchBox } from './SearchBox'
 
 export function TabsPanel() {
-  const searchParams = {
-    searchString: '*',
-    start: 0,
-    size: 25,
-  }
-  const { networks, error, isLoading } = useNetworkSearch(searchParams)
+  const searchParams = useSearchParams()
+  const query = searchParams.get('q')
+
+  const { networks, error, isLoading, hasMore, loadMore, totalCount } = useNetworkSearch({
+    searchString: query || '*',
+  })
 
   return (
     <Card className="p-4">
+      <div className="mb-6">
+        <SearchBox totalCount={totalCount} />
+      </div>
       <Tabs defaultValue="networks" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="networks">Networks</TabsTrigger>
@@ -29,7 +34,13 @@ export function TabsPanel() {
                 Error loading networks: {error.message}
               </p>
             )}
-            <NetworkTable networks={networks} />
+            <NetworkTable 
+              networks={networks} 
+              isLoading={isLoading}
+              hasMore={hasMore}
+              onLoadMore={loadMore}
+              totalCount={totalCount}
+            />
           </div>
         </TabsContent>
         <TabsContent value="collections">
