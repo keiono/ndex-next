@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { SidebarProvider } from '@/components/ui/sidebar'
-import { AppSidebar } from './AppSidebar'
+import { AppSidebar } from './top-page/AppSidebar'
 
 interface MainPanelProps {
   children: React.ReactNode
