@@ -1,3 +1,7 @@
+# ndex-next: Modernized frontend for NDEx v3
+
+(TBD)
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -37,6 +41,11 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 # Project Structure
 
+```
+public/                  # Directory for config and resource files
+├── config.json          # Basic application config
+└── contents             # Directory for contents for thetop page
+
 src/
 ├── app/                     # Core application directory for App Router
 │   ├── layout.tsx           # Root layout definition
@@ -44,17 +53,17 @@ src/
 │   └── providers.tsx        # Global providers (SWR Config, etc.)
 │
 ├── components/              # Reusable component library
-│   ├── ui/                 # Basic UI components
-│   │   ├── button.tsx     # Atomic button component
-│   │   └── input.tsx      # Form input elements
-│   └── features/           # Feature-specific components
-│       └── auth/          # Authentication related components
-│           ├── login-form.tsx 
+│   ├── ui/                  # Basic UI components
+│   │   ├── button.tsx       # Atomic button component
+│   │   └── input.tsx        # Form input elements
+│   └── features/            # Feature-specific components
+│       └── auth/            # Authentication related components
+│           ├── login-form.tsx
 │           └── register-form.tsx
 │
-├── hooks/                  # Custom React hooks
-│   ├── use-auth.ts        # Authentication hooks
-│   └── use-form.ts        # Form handling hooks
+├── hooks/                   # Custom React hooks
+│   ├── use-auth.ts          # Authentication hooks
+│   └── use-form.ts          # Form handling hooks
 │
 ├── lib/                    # Utility functions and configurations
 │   ├── api/               # API client setup
@@ -74,3 +83,4 @@ src/
     │   ├── user.ts      # User entity definition
     │   └── post.ts      # Post entity definition
     └── index.ts         # Common type definitions and exports
+```
