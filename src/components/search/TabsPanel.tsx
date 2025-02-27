@@ -3,12 +3,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { NetworkTable } from './NetworkTable'
 import { useNetworkSearch } from '@/hooks/use-network-search'
-import { useSearchParams } from 'next/navigation'
+import { useSearchStore } from '@/stores/search-store'
 // import { SidebarTrigger } from '@/components/ui/sidebar'
 
 export function TabsPanel() {
-  const searchParams = useSearchParams()
-  const query = searchParams.get('q')
+  const { query } = useSearchStore()
 
   const { networks, error, isLoading, hasMore, loadMore, totalCount } =
     useNetworkSearch({
@@ -18,7 +17,9 @@ export function TabsPanel() {
   return (
     <Tabs defaultValue="networks" className="w-full">
       <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="networks">Networks</TabsTrigger>
+        <TabsTrigger value="networks">
+          Networks (Matched {totalCount ?? '-'})
+        </TabsTrigger>
         <TabsTrigger value="collections">Users</TabsTrigger>
       </TabsList>
       <TabsContent value="networks">

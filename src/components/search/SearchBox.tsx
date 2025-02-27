@@ -2,54 +2,52 @@
 
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchStore } from '@/stores/search-store'
 
-interface SearchBoxProps {
-  defaultTerm?: string
-  totalCount?: number
-}
-
-export function SearchBox({ defaultTerm = '', totalCount }: SearchBoxProps) {
-  const [searchTerm, setSearchTerm] = useState(defaultTerm)
+export function SearchBox() {
+  const { query, setQuery } = useSearchStore()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [currentQuery, setCurrentQuery] = useState<string>('')
 
+  // Set initial query from URL or default term
   useEffect(() => {
-    const query = searchParams.get('q')
-    if (query) {
-      setSearchTerm(query)
+    const urlQuery = searchParams.get('q')
+    if (urlQuery) {
+      setQuery(urlQuery)
+      setCurrentQuery(query)
+    } else if (query) {
+      setCurrentQuery(query)
     }
-  }, [searchParams])
+  }, [searchParams, query, setQuery])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (searchTerm.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`)
+
+    const nextQuery = currentQuery.trim()
+    if (nextQuery) {
+      setQuery(nextQuery)
+      router.push(`/search?q=${encodeURIComponent(nextQuery)}`)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-full max-w-6xl items-center space-x-2">
-      <Input 
-        type="search" 
-        placeholder="NDEx search term..." 
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+    <form
+      onSubmit={handleSubmit}
+      className="flex w-full max-w-6xl items-center space-x-2"
+    >
+      <Input
+        type="search"
+        placeholder="Enter search term..."
+        value={currentQuery}
+        onChange={(e) => setCurrentQuery(e.target.value)}
       />
       <div className="flex items-center gap-2">
-        <Button 
-          type="submit" 
-          variant="outline"
-          disabled={!searchTerm.trim()}
-        >
+        <Button type="submit" variant="outline" disabled={!currentQuery.trim()}>
           Search
         </Button>
-        {totalCount !== undefined && totalCount >= 0 && (
-          <span className="text-sm text-muted-foreground">
-            {totalCount} hits
-          </span>
-        )}
       </div>
     </form>
   )

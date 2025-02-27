@@ -67,6 +67,10 @@ export function NetworkTable({
     prevNetworksLength.current = networks.length
   }, [networks.length])
 
+  useEffect(() => {
+    console.log('%%%%%%%%%%%Networks: UPDATED', networks)
+  }, [networks])
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
