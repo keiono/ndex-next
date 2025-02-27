@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/table'
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { useSearchStore } from '../../stores/search-store'
 
 type SortField = 'nodeCount' | 'edgeCount'
 type SortDirection = 'asc' | 'desc'
@@ -33,6 +34,7 @@ export function NetworkTable({
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
   const prevNetworksLength = useRef(networks.length)
   const observerTarget = useRef<HTMLDivElement>(null)
+  const queryString: string = useSearchStore((state) => state.query)
 
   // Set up intersection observer for infinite scrolling
   useEffect(() => {
@@ -86,7 +88,13 @@ export function NetworkTable({
   })
 
   if (!networks || networks.length === 0) {
-    return <div>No networks found.</div>
+    const message =
+      queryString === '' ? 'Please enter a search query' : 'No results'
+    return (
+      <div className="flex items-center justify-center w-full h-40">
+        <h4 className="text-lg font-medium text-muted-foreground">{message}</h4>
+      </div>
+    )
   }
 
   return (

@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { NetworkTable } from './NetworkTable'
 import { useNetworkSearch } from '@/hooks/use-network-search'
 import { useSearchStore } from '@/stores/search-store'
+import { useEffect } from 'react'
 // import { SidebarTrigger } from '@/components/ui/sidebar'
 
 export function TabsPanel() {
@@ -11,8 +12,12 @@ export function TabsPanel() {
 
   const { networks, error, isLoading, hasMore, loadMore, totalCount } =
     useNetworkSearch({
-      searchString: query || '*',
+      searchString: query || '',
     })
+
+  useEffect(() => {
+    console.log('Query changed in TabsPanel:', query)
+  }, [query])
 
   return (
     <Tabs defaultValue="networks" className="w-full">

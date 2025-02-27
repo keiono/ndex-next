@@ -8,33 +8,71 @@ import {
 import { networkListFetcher } from '../lib/api/network'
 import { useConfig } from '../lib/contexts/ConfigContext'
 
-const PAGE_SIZE = 500
+const PAGE_SIZE = 200
 
 export function useNetworkSearch(params: NetworkSearchParams) {
   const config = useConfig()
   const searchNetworkUrl: string = `${config.ndexBaseUrl}/search/network`
 
+  // Check for empty search string
+  const isEmptyQuery = !params.searchString || params.searchString.trim() === ''
+
+  console.log(
+    'Query==========>',
+    isEmptyQuery ? '(empty)' : params.searchString,
+  )
+
+  // Create a unique cache key that changes when the search query changes
+  const searchKey = isEmptyQuery ? 'empty' : params.searchString
+
+  // Fix #1: Type the getKey function properly
+  // Update getKey to include the search query in the key
   const getKey = (
     pageIndex: number,
     previousPageData: NetworkSearchResponse | null,
-  ) => {
+  ): string | null => {
+    // Return null for empty queries to prevent fetching
+    if (isEmptyQuery) return null
+
     if (!previousPageData) {
-      // Initial fetch
-      return `${searchNetworkUrl}?start=0&size=${PAGE_SIZE}`
+      // Include searchString in the key to ensure cache invalidation
+      return `${searchNetworkUrl}?start=0&size=${PAGE_SIZE}&q=${encodeURIComponent(
+        searchKey,
+      )}`
     }
-    if (
-      previousPageData &&
-      previousPageData.numFound <= pageIndex * PAGE_SIZE
-    ) {
+
+    if (previousPageData.numFound <= pageIndex * PAGE_SIZE) {
       return null
     }
 
-    // Return a string key instead of a number
-    // const start = pageIndex * PAGE_SIZE
-    return `${searchNetworkUrl}?start=${pageIndex}&size=${PAGE_SIZE}`
+    const start = pageIndex * PAGE_SIZE
+    // Include searchString in the key to ensure cache invalidation
+    return `${searchNetworkUrl}?start=${start}&size=${PAGE_SIZE}&q=${encodeURIComponent(
+      searchKey,
+    )}`
   }
 
-  const fetcher = async (url: string) => {
+  // Fix #2: Make fetcher always return NetworkSearchResponse (not null)
+  const fetcher = async (url: string): Promise<NetworkSearchResponse> => {
+    // Safety check for no URL - return empty result instead of null
+    if (!url) {
+      return {
+        networks: [],
+        numFound: 0,
+        start: 0,
+      } as NetworkSearchResponse
+    }
+
+    // Additional check for empty query - return empty result
+    if (isEmptyQuery) {
+      console.log('Fetcher detected empty query, returning empty result')
+      return {
+        networks: [],
+        numFound: 0,
+        start: 0,
+      } as NetworkSearchResponse
+    }
+
     console.log('URL==>', url)
     console.log(`Fetching networks from ${url}`)
     const response = await networkListFetcher(url, params)
@@ -47,6 +85,8 @@ export function useNetworkSearch(params: NetworkSearchParams) {
     return response
   }
 
+  // Now the types should match correctly
+  // Add searchKey as dependency to SWR options
   const { data, isLoading, error, size, setSize, isValidating } =
     useSWRInfinite<NetworkSearchResponse>(getKey, fetcher, {
       revalidateOnFocus: false,
@@ -56,9 +96,29 @@ export function useNetworkSearch(params: NetworkSearchParams) {
       errorRetryCount: 3,
       parallel: false,
       revalidateFirstPage: false,
+      // Reset size to 1 whenever searchKey changes
+      revalidateAll: true,
+      // This key helps SWR know when to reset the cache
+      onSuccess: () => {
+        console.log('Fetched data for query:', searchKey)
+      },
     })
 
-  // Flatten networks without losing any results
+  // Rest of the function remains the same...
+
+  // For empty queries, return empty result after the hook is called
+  if (isEmptyQuery) {
+    return {
+      networks: [],
+      totalCount: 0,
+      isLoading: false,
+      error: null,
+      hasMore: false,
+      loadMore: () => {},
+    }
+  }
+
+  // Continue with normal processing for non-empty queries
   const networks: NetworkSummary[] = data
     ? data.flatMap((page) => page.networks ?? [])
     : []

@@ -6,31 +6,49 @@ import { SearchBox } from './search/SearchBox'
 
 export function NavBar() {
   return (
-    <header className="border-b-2 w-full px-3 h-14 flex items-center">
-      <Link
-        href="/"
-        className="scroll-m-20 text-3xl font-extrabold tracking-tight flex items-center justify-start gap-4 text-ndex"
-      >
-        <Image src="/ndex-logo.svg" alt="NDEx Logo" width={76} height={76} />
-        NDEx v3
-      </Link>
-      <div className="flex-1 max-w-xl px-5">
-        <SearchBox />
-      </div>
-      <div className="ml-auto flex items-center gap-4">
-        <nav className="hidden md:flex items-center gap-4">
-          <Link href="/about" className="text-lg hover:text-primary">
-            About
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
+      <div className="w-full h-14 flex items-center">
+        <div className="px-4">
+          <Link
+            href="/"
+            className="scroll-m-20 text-2xl font-extrabold tracking-tight flex items-center justify-start gap-2 text-ndex"
+          >
+            <Image
+              src="/ndex-logo.svg"
+              alt="NDEx Logo"
+              width={50}
+              height={50}
+            />
+            <span className="hidden sm:inline">NDEx v3</span>
           </Link>
-          <Link href="/docs" className="text-lg hover:text-primary">
-            Docs
-          </Link>
-          <Link href="/contact" className="text-lg hover:text-primary">
-            Contact
-          </Link>
-        </nav>
-        <ModeToggle />
-        <Button>Login</Button>
+        </div>
+        <div className="flex-1 max-w-xl px-4">
+          <SearchBox />
+        </div>
+        <div className="ml-auto flex items-center gap-2 md:gap-4 pr-4">
+          <nav className="hidden md:flex items-center gap-4">
+            <Link
+              href="/about"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
+              About
+            </Link>
+            <Link
+              href="/docs"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
+              Docs
+            </Link>
+            <Link
+              href="/contact"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
+              Contact
+            </Link>
+          </nav>
+          <ModeToggle />
+          <Button size="sm">Login</Button>
+        </div>
       </div>
     </header>
   )
