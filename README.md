@@ -1,4 +1,6 @@
-# ndex-next: Modernized frontend for NDEx v3
+# ndex3: Modernized frontend for NDEx v3
+
+Prototype for next API
 
 (TBD)
 
