@@ -29,6 +29,7 @@ export function SearchBox() {
     // Early return if query is empty - this prevents any submission logic
     if (!nextQuery) {
       console.log('Empty search prevented')
+
       return
     }
 
@@ -61,6 +62,8 @@ export function SearchBox() {
     input.addEventListener('search', handleSearch)
     return () => input.removeEventListener('search', handleSearch)
   }, [setQuery, router])
+
+  useEffect(() => {}, [currentQuery])
 
   return (
     <form

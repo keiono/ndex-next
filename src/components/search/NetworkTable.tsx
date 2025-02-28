@@ -32,6 +32,7 @@ export function NetworkTable({
 }: NetworkTableProps) {
   const [sortField, setSortField] = useState<SortField>('nodeCount')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
+  const [hasUserSorted, setHasUserSorted] = useState(false)
   const prevNetworksLength = useRef(networks.length)
   const observerTarget = useRef<HTMLDivElement>(null)
   const queryString: string = useSearchStore((state) => state.query)
@@ -70,10 +71,11 @@ export function NetworkTable({
   }, [networks.length])
 
   useEffect(() => {
-    console.log('%%%%%%%%%%%Networks: UPDATED', networks)
+    console.log('%%%%%%%%%%% Table Data: UPDATED', networks)
   }, [networks])
 
   const handleSort = (field: SortField) => {
+    setHasUserSorted(true)
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
     } else {
@@ -82,10 +84,12 @@ export function NetworkTable({
     }
   }
 
-  const sortedNetworks = [...networks].sort((a, b) => {
-    const modifier = sortDirection === 'asc' ? 1 : -1
-    return (a[sortField] - b[sortField]) * modifier
-  })
+  const sortedNetworks = hasUserSorted
+    ? [...networks].sort((a, b) => {
+        const modifier = sortDirection === 'asc' ? 1 : -1
+        return (a[sortField] - b[sortField]) * modifier
+      })
+    : networks
 
   if (!networks || networks.length === 0) {
     const message =
@@ -104,7 +108,6 @@ export function NetworkTable({
           <TableRow>
             <TableHead className="w-2">Index</TableHead>
             <TableHead className="w-1/9">Name</TableHead>
-            <TableHead className="w-2">Reference</TableHead>
             <TableHead className="w-1/6 hidden sm:table-cell">
               Description
             </TableHead>
@@ -139,11 +142,10 @@ export function NetworkTable({
               <TableCell>{index + 1}</TableCell>
               <TableCell>{network.name}</TableCell>
               <TableCell>
-                {network.properties
-                  .map((entry) => `${entry.name} = ${entry.value}`)
-                  .join(', ')}
+                {network.description && network.description.length > 100
+                  ? network.description.slice(0, 100) + '...'
+                  : network.description}
               </TableCell>
-              <TableCell>{network.description}</TableCell>
               <TableCell>
                 {new Date(network.creationTime).toLocaleDateString()}
               </TableCell>

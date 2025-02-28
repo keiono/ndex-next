@@ -8,19 +8,14 @@ import {
 import { networkListFetcher } from '../lib/api/network'
 import { useConfig } from '../lib/contexts/ConfigContext'
 
-const PAGE_SIZE = 200
+const PAGE_SIZE = 1000
 
 export function useNetworkSearch(params: NetworkSearchParams) {
   const config = useConfig()
-  const searchNetworkUrl: string = `${config.ndexBaseUrl}/search/network`
+  const searchNetworkUrl: string = `https://${config.ndexBaseUrl}/v2/search/network`
 
   // Check for empty search string
   const isEmptyQuery = !params.searchString || params.searchString.trim() === ''
-
-  console.log(
-    'Query==========>',
-    isEmptyQuery ? '(empty)' : params.searchString,
-  )
 
   // Create a unique cache key that changes when the search query changes
   const searchKey = isEmptyQuery ? 'empty' : params.searchString
@@ -31,25 +26,21 @@ export function useNetworkSearch(params: NetworkSearchParams) {
     pageIndex: number,
     previousPageData: NetworkSearchResponse | null,
   ): string | null => {
-    // Return null for empty queries to prevent fetching
     if (isEmptyQuery) return null
 
+    // Append the query string so that the key changes when it changes.
+    const queryParam = encodeURIComponent(params.searchString)
+
     if (!previousPageData) {
-      // Include searchString in the key to ensure cache invalidation
-      return `${searchNetworkUrl}?start=0&size=${PAGE_SIZE}&q=${encodeURIComponent(
-        searchKey,
-      )}`
+      return `${searchNetworkUrl}?q=${queryParam}&start=0&size=${PAGE_SIZE}`
     }
 
     if (previousPageData.numFound <= pageIndex * PAGE_SIZE) {
       return null
     }
 
-    const start = pageIndex * PAGE_SIZE
-    // Include searchString in the key to ensure cache invalidation
-    return `${searchNetworkUrl}?start=${start}&size=${PAGE_SIZE}&q=${encodeURIComponent(
-      searchKey,
-    )}`
+    const start = pageIndex
+    return `${searchNetworkUrl}?q=${queryParam}&start=${start}&size=${PAGE_SIZE}`
   }
 
   // Fix #2: Make fetcher always return NetworkSearchResponse (not null)
@@ -89,8 +80,9 @@ export function useNetworkSearch(params: NetworkSearchParams) {
   // Add searchKey as dependency to SWR options
   const { data, isLoading, error, size, setSize, isValidating } =
     useSWRInfinite<NetworkSearchResponse>(getKey, fetcher, {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+      revalidateOnMount: true,
       dedupingInterval: 1000,
       shouldRetryOnError: true,
       errorRetryCount: 3,
@@ -124,15 +116,16 @@ export function useNetworkSearch(params: NetworkSearchParams) {
     : []
 
   // Only deduplicate if needed
-  const uniqueNetworks: NetworkSummary[] = Array.from(
-    new Map(
-      networks.map((network) => [
-        // Create a more specific key if needed
-        `${network.externalId}_${network.name}`,
-        network,
-      ]),
-    ).values(),
-  )
+  // const uniqueNetworks: NetworkSummary[] = Array.from(
+  //   new Map(
+  //     networks.map((network) => [
+  //       // Create a more specific key if needed
+  //       `${network.externalId}_${network.name}`,
+  //       network,
+  //     ]),
+  //   ).values(),
+  // )
+  const uniqueNetworks: NetworkSummary[] = networks
 
   console.log(`Networks after deduplication: ${uniqueNetworks.length}`)
 
@@ -163,9 +156,7 @@ export function useNetworkSearch(params: NetworkSearchParams) {
     // Only increment size if we haven't reached the maximum number of pages
     if (hasMore && !isLoading && size < maxPages) {
       console.log(
-        `@@@@@@@@@@@@Loading more networks... (page ${
-          size + 1
-        } of ${maxPages})`,
+        `@@@@@@@@@@@@Loading more networks... (page ${size + 1} / ${maxPages})`,
       )
       setSize(size + 1)
     } else if (size >= maxPages) {
