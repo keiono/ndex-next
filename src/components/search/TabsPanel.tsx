@@ -33,9 +33,11 @@ export function TabsPanel() {
     <Tabs defaultValue="networks" className="w-full">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="networks">
-          Networks (Matched {totalCount ?? '-'})
+          Networks ({totalCount ?? '-'})
         </TabsTrigger>
-        <TabsTrigger value="collections">Users</TabsTrigger>
+        <TabsTrigger value="collections">
+          Users ({userTotalCount ?? '-'})
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="networks">
         <div className="p-4">

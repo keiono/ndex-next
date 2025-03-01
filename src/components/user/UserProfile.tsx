@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useUserProfile } from '@/hooks/use-user'
+import { useUser } from '@/hooks/use-user'
 
 interface UserProfileProps {
   /** UUID of the user */
@@ -10,7 +10,7 @@ interface UserProfileProps {
 }
 
 export default function UserProfile({ uuid }: UserProfileProps) {
-  const { user, isLoading, error } = useUserProfile(uuid)
+  const { user, isLoading, error } = useUser(uuid)
 
   if (isLoading) {
     return (

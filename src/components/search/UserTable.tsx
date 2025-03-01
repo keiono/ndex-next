@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import {
   useReactTable,
   getCoreRowModel,
@@ -6,6 +7,14 @@ import {
   ColumnDef,
 } from '@tanstack/react-table'
 import { User } from '@/types/api/ndex'
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from '@/components/ui/table'
 
 interface UserTableProps {
   users: User[]
@@ -28,23 +37,39 @@ export function UserTable({
   const columns = React.useMemo<ColumnDef<User, any>[]>(
     () => [
       {
-        header: 'ID',
+        header: 'Username',
         accessorKey: 'externalId',
+        cell: ({ row, getValue }) => {
+          const id = getValue() as string
+          const userName = row.original.userName
+          return (
+            <Link
+              className="text-blue-500 hover:text-blue-700"
+              href={`/users/${id}`}
+            >
+              {userName}
+            </Link>
+          )
+        },
       },
       {
-        header: 'Username',
-        accessorKey: 'userName',
+        header: 'First Name',
+        accessorKey: 'firstName',
+      },
+      {
+        header: 'Last Name',
+        accessorKey: 'lastName',
       },
       {
         header: 'Display Name',
         accessorKey: 'displayName',
       },
       {
-        header: 'Email',
-        accessorKey: 'emailAddress',
+        header: 'Description',
+        accessorKey: 'description',
       },
       {
-        header: 'Created',
+        header: 'Joined on',
         accessorKey: 'creationTime',
         cell: ({ getValue }) =>
           getValue() ? new Date(getValue() as string).toLocaleDateString() : '',
@@ -63,35 +88,35 @@ export function UserTable({
     <div>
       {isLoading && <div>Loading...</div>}
       {error && <div>Error: {error.message}</div>}
-      <table>
-        <thead>
+      <Table>
+        <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>
+                <TableHead key={header.id}>
                   {header.isPlaceholder
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
-                </th>
+                </TableHead>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </thead>
-        <tbody>
+        </TableHeader>
+        <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
+            <TableRow key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+                </TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
       {hasMore && !isLoading && <button onClick={loadMore}>Load More</button>}
       <div>{totalCount} Users Total</div>
     </div>

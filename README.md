@@ -86,3 +86,4 @@ src/
     │   └── post.ts      # Post entity definition
     └── index.ts         # Common type definitions and exports
 ```
+# Project Overview

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@js4cytoscape/ndex-client": "^0.4.3-alpha.12",
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-dropdown-menu": "^2.1.6",
     "@radix-ui/react-separator": "^1.1.2",
