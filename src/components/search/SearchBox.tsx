@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useSearchStore } from '@/stores/search-store'
+import { FeaturedNetworksButton } from './FeaturedNetworksButton'
+import { SearchExamplesButton } from './SearchExamplesButton'
 
 export function SearchBox() {
   const { setQuery } = useSearchStore()
@@ -66,10 +68,7 @@ export function SearchBox() {
   useEffect(() => {}, [currentQuery])
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex w-full max-w-6xl items-center space-x-2"
-    >
+    <form onSubmit={handleSubmit} className="flex items-center space-x-2">
       <Input
         ref={inputRef}
         type="search"
@@ -77,11 +76,22 @@ export function SearchBox() {
         value={currentQuery}
         onChange={(e) => setCurrentQuery(e.target.value)}
         onKeyDown={handleKeyDown}
+        className="border-slate-500"
       />
       <div className="flex items-center gap-2">
-        <Button type="submit" variant="outline" disabled={!currentQuery.trim()}>
+        <Button
+          className="border-slate-600"
+          type="submit"
+          variant="outline"
+          disabled={!currentQuery.trim()}
+        >
           Search
         </Button>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button variant="link">Latest</Button>
+        <FeaturedNetworksButton />
+        <SearchExamplesButton />
       </div>
     </form>
   )

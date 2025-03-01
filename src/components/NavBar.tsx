@@ -8,21 +8,21 @@ export function NavBar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="w-full h-14 flex items-center">
-        <div className="px-4">
+        <div className="px-2">
           <Link
             href="/"
-            className="scroll-m-20 text-2xl font-extrabold tracking-tight flex items-center justify-start gap-2 text-ndex"
+            className="scroll-m-20 text-4xl font-extrabold tracking-tight flex items-center justify-start gap-2 text-ndex"
           >
             <Image
               src="/ndex-logo.svg"
               alt="NDEx Logo"
-              width={50}
+              width={70}
               height={50}
             />
-            <span className="hidden sm:inline">NDEx v3</span>
+            <span className="hidden sm:inline">NDEx</span>
           </Link>
         </div>
-        <div className="flex-1 max-w-xl px-4">
+        <div className="flex-1 max-w-3xl px-4">
           <SearchBox />
         </div>
         <div className="ml-auto flex items-center gap-2 md:gap-4 pr-4">
